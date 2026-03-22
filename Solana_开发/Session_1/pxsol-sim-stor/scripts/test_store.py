@@ -1,4 +1,8 @@
 import sys
+from pathlib import Path
+
+if __package__ in {None, ""}:
+    sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from app.store_client import describe_wallet, load_keypair_from_file, read_data, write_text
 
