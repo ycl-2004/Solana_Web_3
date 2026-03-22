@@ -56,6 +56,20 @@ python3 scripts/test_store.py update "new content"
 python3 scripts/test_store.py roundtrip "first text" "second text"
 ```
 
+也可以手动指定钱包文件：
+
+```bash
+python3 scripts/test_store.py --keypair /Users/yichenlin/second-wallet.json read
+python3 scripts/test_store.py --keypair /Users/yichenlin/.config/solana/id.json write "hello from another wallet"
+```
+
+如果你不传 `--keypair`，脚本会按这个顺序找钱包：
+
+1. `--keypair /path/to/id.json`
+2. `SOLANA_KEYPAIR_PATH` 环境变量
+3. `~/.config/solana/cli/config.yml` 里的当前 keypair
+4. 内建默认钱包路径
+
 ### 2. 启动本地 Python 网页留言板
 
 ```bash
