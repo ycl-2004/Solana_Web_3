@@ -1,0 +1,157 @@
+可以，取消就是先 **deactivate stake**。
+你这次的 **Stake Account** 是：
+
+```text
+HWVdiFgSJHAxuVxRsv7HcR1ZSkn7LU8kDwDoLzKYx71B
+```
+
+而 Solana 的规则是：
+
+* 先 **deactivate / undelegate**
+* stake 会进入 **deactivating / cooling down**
+* 等它变成 **inactive**
+* 才能 **withdraw** 回你的钱包 ([Solana][1])
+
+## 你现在直接这样做
+
+先确认你在 Devnet：
+
+```bash
+solana config get
+```
+
+如果不是，就切到 Devnet：
+
+```bash
+solana config set --url https://api.devnet.solana.com
+```
+
+Devnet 的官方公开 RPC 就是这个。 ([Solana][2])
+
+然后取消委托：
+
+```bash
+solana deactivate-stake HWVdiFgSJHAxuVxRsv7HcR1ZSkn7LU8kDwDoLzKYx71B
+```
+
+这个命令是官方支持的 stake CLI 操作之一。 ([docs.solana.com][3])
+
+## 怎么看有没有取消成功
+
+查 stake account 状态：
+
+```bash
+solana stake-account HWVdiFgSJHAxuVxRsv7HcR1ZSkn7LU8kDwDoLzKYx71B
+```
+
+如果它还在冷却中，你会看到类似 deactivating / cooling down 的状态；官方说明里也写到，刚 un-delegate 后不会立刻可提领。 ([Solana][4])
+
+## 之后怎么拿回钱包
+
+等它 inactive 后，再提回主钱包：
+
+```bash
+solana withdraw-stake HWVdiFgSJHAxuVxRsv7HcR1ZSkn7LU8kDwDoLzKYx71B /Users/yichenlin/.config/solana/id.json ALL
+```
+
+`withdraw-stake` 也是官方支持的 stake CLI 命令。只有未委托 / inactive 的 stake 才能被提领。 ([docs.solana.com][3])
+
+## 你这笔为什么能取消
+
+因为你刚刚输出里已经显示：
+
+* `staker = StXNKB...`
+* `withdrawer = StXNKB...`
+
+也就是你的主钱包同时有 **stake authority** 和 **withdraw authority**，所以你有权取消和提领。stake account 本质上是你自己的账户，不是把钱送给 validator。 ([Solana][1])
+
+## 一句话版本
+
+你现在先跑这条：
+
+```bash
+solana deactivate-stake HWVdiFgSJHAxuVxRsv7HcR1ZSkn7LU8kDwDoLzKYx71B
+```
+
+然后用这条持续检查：
+
+```bash
+solana stake-account HWVdiFgSJHAxuVxRsv7HcR1ZSkn7LU8kDwDoLzKYx71B
+```
+
+等 inactive 后，再跑：
+
+```bash
+solana withdraw-stake HWVdiFgSJHAxuVxRsv7HcR1ZSkn7LU8kDwDoLzKYx71B /Users/yichenlin/.config/solana/id.json ALL
+```
+
+yichenlin@dhcp-172-17-21-92 Training_1_2 % node delegate-sol-test.js
+主钱包地址 Wallet: StXNKBqQhthowMFPPwUs2jjvbFoEujB8T5ZC6r2v5uH
+主钱包 SOL 余额: 3.96308084 SOL
+本次要委托的 votePubkey: B6kMs74PL2invrEmeyZSXiH4Rim3VmHRDJBuUcsNAoGE
+新建 stake account 地址: HWVdiFgSJHAxuVxRsv7HcR1ZSkn7LU8kDwDoLzKYx71B
+stake account 已保存到: ./stake-account.json
+创建 stake account 交易签名: 5uX5fBUwVDVC8wjXAn3xN7MwiQWZ2W2pMQu9SaWUjCBhnERQqiHdXsYCKYCZu31RPZqPxjTQ5FAhJA89aQdRgbkf
+Delegate 交易签名: 2TezNTNZ8WmBvRoaQCZPSXc5YPKaJe4emGKNj5eGwyT1yNeo2P6Tw6ptpXhfaWnGmmhUhAGcNQdjDmy8BjYwhrRn
+--------------------------------------------------
+Delegate / 质押 SOL 测试完成
+主钱包: StXNKBqQhthowMFPPwUs2jjvbFoEujB8T5ZC6r2v5uH
+Stake Account: HWVdiFgSJHAxuVxRsv7HcR1ZSkn7LU8kDwDoLzKYx71B
+Vote Pubkey: B6kMs74PL2invrEmeyZSXiH4Rim3VmHRDJBuUcsNAoGE
+Stake Account 已保存到: ./stake-account.json
+创建 stake 签名: 5uX5fBUwVDVC8wjXAn3xN7MwiQWZ2W2pMQu9SaWUjCBhnERQqiHdXsYCKYCZu31RPZqPxjTQ5FAhJA89aQdRgbkf
+Delegate 签名: 2TezNTNZ8WmBvRoaQCZPSXc5YPKaJe4emGKNj5eGwyT1yNeo2P6Tw6ptpXhfaWnGmmhUhAGcNQdjDmy8BjYwhrRn
+Stake Account 链上信息:
+{
+  data: {
+    parsed: {
+      info: {
+        meta: {
+          authorized: {
+            staker: 'StXNKBqQhthowMFPPwUs2jjvbFoEujB8T5ZC6r2v5uH',
+            withdrawer: 'StXNKBqQhthowMFPPwUs2jjvbFoEujB8T5ZC6r2v5uH'
+          },
+          lockup: {
+            custodian: '11111111111111111111111111111111',
+            epoch: 0,
+            unixTimestamp: 0
+          },
+          rentExemptReserve: '2282880'
+        },
+        stake: {
+          creditsObserved: 98155387,
+          delegation: {
+            activationEpoch: '1042',
+            deactivationEpoch: '18446744073709551615',
+            stake: '7717120',
+            voter: 'B6kMs74PL2invrEmeyZSXiH4Rim3VmHRDJBuUcsNAoGE',
+            warmupCooldownRate: 0.25
+          }
+        }
+      },
+      type: 'delegated'
+    },
+    program: 'stake',
+    space: 200
+  },
+  executable: false,
+  lamports: 10000000,
+  owner: PublicKey [PublicKey(Stake11111111111111111111111111111111111111)] {
+    _bn: BN {
+      negative: 0,
+      words: [
+               0, 19361792,
+        52606602, 24259041,
+        39157587, 59416236,
+        54754271, 22063712,
+         1544503,   108662,
+               0
+      ],
+      length: 10,
+      red: null
+    }
+  },
+  rentEpoch: 18446744073709552000,
+  space: 200
+}
+--------------------------------------------------
