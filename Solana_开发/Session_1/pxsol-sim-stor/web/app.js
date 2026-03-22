@@ -9,7 +9,7 @@ const messages = {
   zh: {
     document_title: "Phantom Devnet 留言板",
     eyebrow: "Phantom + Devnet",
-    hero_title: "把当前项目直接变成 GitHub 可部署的前端留言板",
+    hero_title: "Solana P1 _ 留言板",
     hero_intro: "这个版本不再读取本地私钥文件，也不需要 Python server。网页会直接连接 Phantom，由用户自己签名交易并写入你现有的 Solana 程序。",
     side_label: "当前设置",
     side_network: "网络",
@@ -37,7 +37,6 @@ const messages = {
     composer_hint: "这份合约当前没有“追加多条留言”的能力，所以你每次发新内容时，都会覆盖自己上一条链上留言。",
     status_label: "状态",
     board_title: "链上留言板",
-    legend_current: "当前钱包会排在最前",
     board_note: "留言板直接读取当前 program 下面的所有链上账户。因为合约没有存作者昵称或时间戳，所以这里只能稳定显示 PDA 和消息内容。",
     board_meta: "RPC: {rpc} | Program: {program} | Accounts: {count}",
     empty_board: "链上还没有可见留言。连上 Phantom 之后来发布第一条吧。",
@@ -70,7 +69,7 @@ const messages = {
   en: {
     document_title: "Phantom Devnet Message Board",
     eyebrow: "Phantom + Devnet",
-    hero_title: "Turn this project into a GitHub-deployable front-end message board",
+    hero_title: "Solana P1 _ Message Board",
     hero_intro: "This version no longer reads local keypair files and does not need a Python server. The page connects directly to Phantom, and each user signs their own transaction into your existing Solana program.",
     side_label: "Current Setup",
     side_network: "Network",
@@ -98,7 +97,6 @@ const messages = {
     composer_hint: "This contract does not support appending multiple messages yet, so each new submission replaces the previous on-chain message for the same wallet.",
     status_label: "Status",
     board_title: "On-Chain Board",
-    legend_current: "Your current wallet stays pinned to the top",
     board_note: "The board reads every account owned by the current program. Because the contract does not store author names or timestamps, the UI can only reliably show the PDA and message content.",
     board_meta: "RPC: {rpc} | Program: {program} | Accounts: {count}",
     empty_board: "No visible on-chain messages yet. Connect Phantom and publish the first one.",
