@@ -9,73 +9,132 @@
   <body>
     <main class="page">
       <section class="hero">
-        <p class="eyebrow">Phantom + Devnet</p>
-        <h1>把当前项目直接变成 GitHub 可部署的前端留言板</h1>
-        <p class="intro">
-          这个版本不再读取本地私钥文件，也不需要 Python server。网页会直接连接 Phantom，由用户自己签名交易并写入你现有的 Solana 程序。
-        </p>
+        <div class="hero-topbar">
+          <p class="eyebrow" data-i18n="eyebrow">Phantom + Devnet</p>
+          <button id="languageToggle" class="ghost toggle-button" type="button">EN</button>
+        </div>
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <h1 data-i18n="hero_title">把当前项目直接变成 GitHub 可部署的前端留言板</h1>
+            <p class="intro" data-i18n="hero_intro">
+              这个版本不再读取本地私钥文件，也不需要 Python server。网页会直接连接 Phantom，由用户自己签名交易并写入你现有的 Solana 程序。
+            </p>
+          </div>
+          <aside class="hero-side panel hero-sidecard">
+            <p class="side-label" data-i18n="side_label">Current Setup</p>
+            <div class="side-metric">
+              <span class="side-metric-label" data-i18n="side_network">Network</span>
+              <strong>Devnet</strong>
+            </div>
+            <div class="side-metric">
+              <span class="side-metric-label" data-i18n="side_wallet_mode">Wallet Mode</span>
+              <strong data-i18n="side_wallet_value">Phantom Sign</strong>
+            </div>
+            <div class="side-metric">
+              <span class="side-metric-label" data-i18n="side_storage_mode">Storage</span>
+              <strong data-i18n="side_storage_value">One latest message per wallet</strong>
+            </div>
+          </aside>
+        </div>
       </section>
 
       <section class="panel wallet-panel">
         <div class="panel-head">
-          <h2>连接钱包</h2>
-          <button id="connectButton" class="primary" type="button">连接 Phantom</button>
+          <div>
+            <h2 data-i18n="wallet_title">连接钱包</h2>
+            <p class="panel-subtitle" data-i18n="wallet_subtitle">先连接 Phantom，再读取或写入你的链上留言。</p>
+          </div>
+          <button id="connectButton" class="primary" type="button" data-i18n="connect_button">连接 Phantom</button>
         </div>
 
-        <p class="wallet-meta" id="walletMeta">
+        <p class="wallet-meta" id="walletMeta" data-i18n="wallet_meta_default">
           连接钱包后，页面会显示你的地址、PDA 和当前链上留言。
         </p>
         <p class="hint">
-          连接钱包不需要余额；真正发留言时，需要一点点 <strong>devnet SOL</strong>。没有测试币的话，可以到
+          <span data-i18n="wallet_hint_prefix">连接钱包不需要余额；真正发留言时，需要一点点</span>
+          <strong>devnet SOL</strong>。
+          <span data-i18n="wallet_hint_suffix">没有测试币的话，可以到</span>
           <a id="faucetLink" href="https://faucet.solana.com/" target="_blank" rel="noreferrer">Solana Faucet</a>
-          领取。
+          <span data-i18n="wallet_hint_end">领取。</span>
         </p>
       </section>
 
       <section id="connectedCard" class="panel current-card" hidden>
         <div class="panel-head">
-          <h2>当前钱包</h2>
-          <span class="badge">一钱包一条最新留言</span>
+          <div>
+            <h2 data-i18n="current_wallet_title">当前钱包</h2>
+            <p class="panel-subtitle" data-i18n="current_wallet_subtitle">这里只展示你当前连接地址对应的链上留言。</p>
+          </div>
+          <span class="badge" data-i18n="current_wallet_badge">一钱包一条最新留言</span>
         </div>
-        <p class="meta-line">Wallet: <span id="connectedWallet"></span></p>
-        <p class="meta-line">PDA: <span id="connectedPda"></span></p>
-        <p class="message current-message" id="connectedMessage"></p>
+
+        <div class="detail-grid">
+          <div class="detail-item">
+            <span class="detail-label">Wallet</span>
+            <span class="detail-value" id="connectedWallet"></span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">PDA</span>
+            <span class="detail-value" id="connectedPda"></span>
+          </div>
+        </div>
+
+        <div class="message-surface">
+          <p class="surface-label" data-i18n="surface_label">Current Message</p>
+          <p class="message current-message" id="connectedMessage"></p>
+        </div>
       </section>
 
       <section class="panel composer">
         <div class="panel-head">
-          <h2>发布留言</h2>
-          <button id="refreshButton" class="ghost" type="button">刷新链上留言板</button>
+          <div>
+            <h2 data-i18n="composer_title">发布留言</h2>
+            <p class="panel-subtitle" data-i18n="composer_subtitle">输入新内容并签名提交；它会覆盖这个钱包之前那条留言。</p>
+          </div>
+          <button id="refreshButton" class="ghost" type="button" data-i18n="refresh_button">刷新链上留言板</button>
         </div>
 
         <form id="postForm">
           <label>
-            本次留言
+            <span data-i18n="message_label">本次留言</span>
             <textarea
               id="messageInput"
               name="message"
-              rows="4"
+              rows="5"
               maxlength="280"
+              data-i18n-placeholder="message_placeholder"
               placeholder="写点什么上链吧。提交后会覆盖你这个钱包之前的留言。"
               required
             ></textarea>
           </label>
 
-          <button id="submitButton" class="primary" type="submit">用 Phantom 提交到 Devnet</button>
+          <div class="composer-actions">
+            <button id="submitButton" class="primary" type="submit" data-i18n="submit_button">用 Phantom 提交到 Devnet</button>
+            <p class="char-count"><span id="charCount">0</span>/280</p>
+          </div>
         </form>
 
-        <p class="hint">
+        <p class="hint" data-i18n="composer_hint">
           这份合约当前没有“追加多条留言”的能力，所以你每次发新内容时，都会覆盖自己上一条链上留言。
         </p>
-        <p class="status" id="statusText"></p>
+        <div class="status-card">
+          <p class="surface-label" data-i18n="status_label">Status</p>
+          <p class="status" id="statusText"></p>
+        </div>
       </section>
 
       <section class="panel board">
-        <div class="panel-head">
-          <h2>链上留言板</h2>
-          <p id="boardMeta" class="board-meta"></p>
+        <div class="panel-head board-head">
+          <div>
+            <h2 data-i18n="board_title">链上留言板</h2>
+            <p class="board-meta" id="boardMeta"></p>
+          </div>
+          <div class="board-legend">
+            <span class="legend-dot legend-current"></span>
+            <span data-i18n="legend_current">当前钱包会排在最前</span>
+          </div>
         </div>
-        <div class="board-note">
+        <div class="board-note" data-i18n="board_note">
           留言板直接读取当前 program 下面的所有链上账户。因为合约没有存作者昵称或时间戳，所以这里只能稳定显示 PDA 和消息内容。
         </div>
         <div id="boardList" class="board-list"></div>
