@@ -1,0 +1,10 @@
+[
+  {
+    "name": "YC",
+    "keypair_path": "/Users/yichenlin/.config/solana/id.json",
+    "wallet": "StXNKBqQhthowMFPPwUs2jjvbFoEujB8T5ZC6r2v5uH",
+    "pda": "3xbzE31xnb7SryTQVM1EUbqhAbrYvDqv22owfWHAQgfy",
+    "last_signature": "v2XrHPUQSjapcmuaotPbffS3cCPJZS9aECJpTZK7pxPxmWYYvfHFzHKokccyTafNXTdsZqGRiHCqadmRMZihxaA",
+    "updated_at": "2026-03-22T16:50:55.120094+00:00"
+  }
+]

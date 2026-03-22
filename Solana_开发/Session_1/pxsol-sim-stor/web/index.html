@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Phantom Devnet 留言板</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero">
+        <p class="eyebrow">Phantom + Devnet</p>
+        <h1>把当前项目直接变成 GitHub 可部署的前端留言板</h1>
+        <p class="intro">
+          这个版本不再读取本地私钥文件，也不需要 Python server。网页会直接连接 Phantom，由用户自己签名交易并写入你现有的 Solana 程序。
+        </p>
+      </section>
+
+      <section class="panel wallet-panel">
+        <div class="panel-head">
+          <h2>连接钱包</h2>
+          <button id="connectButton" class="primary" type="button">连接 Phantom</button>
+        </div>
+
+        <p class="wallet-meta" id="walletMeta">
+          连接钱包后，页面会显示你的地址、PDA 和当前链上留言。
+        </p>
+        <p class="hint">
+          连接钱包不需要余额；真正发留言时，需要一点点 <strong>devnet SOL</strong>。没有测试币的话，可以到
+          <a id="faucetLink" href="https://faucet.solana.com/" target="_blank" rel="noreferrer">Solana Faucet</a>
+          领取。
+        </p>
+      </section>
+
+      <section id="connectedCard" class="panel current-card" hidden>
+        <div class="panel-head">
+          <h2>当前钱包</h2>
+          <span class="badge">一钱包一条最新留言</span>
+        </div>
+        <p class="meta-line">Wallet: <span id="connectedWallet"></span></p>
+        <p class="meta-line">PDA: <span id="connectedPda"></span></p>
+        <p class="message current-message" id="connectedMessage"></p>
+      </section>
+
+      <section class="panel composer">
+        <div class="panel-head">
+          <h2>发布留言</h2>
+          <button id="refreshButton" class="ghost" type="button">刷新链上留言板</button>
+        </div>
+
+        <form id="postForm">
+          <label>
+            本次留言
+            <textarea
+              id="messageInput"
+              name="message"
+              rows="4"
+              maxlength="280"
+              placeholder="写点什么上链吧。提交后会覆盖你这个钱包之前的留言。"
+              required
+            ></textarea>
+          </label>
+
+          <button id="submitButton" class="primary" type="submit">用 Phantom 提交到 Devnet</button>
+        </form>
+
+        <p class="hint">
+          这份合约当前没有“追加多条留言”的能力，所以你每次发新内容时，都会覆盖自己上一条链上留言。
+        </p>
+        <p class="status" id="statusText"></p>
+      </section>
+
+      <section class="panel board">
+        <div class="panel-head">
+          <h2>链上留言板</h2>
+          <p id="boardMeta" class="board-meta"></p>
+        </div>
+        <div class="board-note">
+          留言板直接读取当前 program 下面的所有链上账户。因为合约没有存作者昵称或时间戳，所以这里只能稳定显示 PDA 和消息内容。
+        </div>
+        <div id="boardList" class="board-list"></div>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/@solana/web3.js@1.98.0/lib/index.iife.min.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
