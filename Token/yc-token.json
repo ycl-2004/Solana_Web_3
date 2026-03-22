@@ -1,0 +1,26 @@
+{
+  "name": "YC Token",
+  "symbol": "YCT",
+  "description": "YC Token 是一个部署在 Solana Devnet 上、带有 Metaplex 元数据的测试型 fungible token。",
+  "image": "https://your-domain.com/images/yc-token.png",
+  "external_url": "https://your-project-site.com",
+  "attributes": [
+    {
+      "trait_type": "Category",
+      "value": "Fungible Token"
+    },
+    {
+      "trait_type": "Network",
+      "value": "Devnet"
+    }
+  ],
+  "properties": {
+    "category": "image",
+    "files": [
+      {
+        "uri": "https://your-domain.com/images/yc-token.png",
+        "type": "image/png"
+      }
+    ]
+  }
+}

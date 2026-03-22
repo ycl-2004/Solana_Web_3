@@ -9,6 +9,25 @@ import {
 import { PublicKey } from "@solana/web3.js";
 import { connection, loadWallet } from "./config";
 
+async function showDelegateStatus(mintAddress: string) {
+  const payer = loadWallet();
+  const mint = new PublicKey(mintAddress);
+
+  const tokenAccount = await getOrCreateAssociatedTokenAccount(
+    connection,
+    payer,
+    mint,
+    payer.publicKey,
+  );
+
+  const accountInfo = await getAccount(connection, tokenAccount.address);
+
+  console.log("Token Account:", tokenAccount.address.toBase58());
+  console.log("当前委托人:", accountInfo.delegate?.toBase58() || "无");
+  console.log("委托额度:", accountInfo.delegatedAmount.toString());
+  console.log("余额:", accountInfo.amount.toString());
+}
+
 async function approveDelegate(
   mintAddress: string,
   delegateAddress: string,
@@ -21,7 +40,7 @@ async function approveDelegate(
   const mintInfo = await getMint(connection, mint);
   const rawAmount = BigInt(amount * 10 ** mintInfo.decimals);
 
-  // 获取 Token Account
+  // 获取 owner 的 ATA
   const tokenAccount = await getOrCreateAssociatedTokenAccount(
     connection,
     payer,
@@ -29,14 +48,14 @@ async function approveDelegate(
     payer.publicKey,
   );
 
-  // 授权给委托人
+  // 授权 delegate
   const signature = await approve(
     connection,
     payer,
-    tokenAccount.address, // 被授权的 Token Account
-    delegate, // 委托人地址
-    payer, // Token Account 所有者
-    rawAmount, // 授权额度
+    tokenAccount.address,
+    delegate,
+    payer,
+    rawAmount,
   );
 
   console.log("授权成功！");
@@ -44,10 +63,7 @@ async function approveDelegate(
   console.log("授权额度:", amount);
   console.log("交易签名:", signature);
 
-  // 验证授权状态
-  const accountInfo = await getAccount(connection, tokenAccount.address);
-  console.log("当前委托人:", accountInfo.delegate?.toBase58() || "无");
-  console.log("委托额度:", accountInfo.delegatedAmount.toString());
+  await showDelegateStatus(mintAddress);
 }
 
 async function revokeDelegate(mintAddress: string) {
@@ -61,7 +77,6 @@ async function revokeDelegate(mintAddress: string) {
     payer.publicKey,
   );
 
-  // 撤销授权
   const signature = await revoke(
     connection,
     payer,
@@ -71,4 +86,56 @@ async function revokeDelegate(mintAddress: string) {
 
   console.log("已撤销授权");
   console.log("交易签名:", signature);
+
+  await showDelegateStatus(mintAddress);
+}
+
+const [, , action, mintAddress, delegateAddress, amount] = process.argv;
+
+if (action === "approve") {
+  if (!mintAddress || !delegateAddress || !amount) {
+    console.error(
+      "用法: npx ts-node approve-delegate.ts approve <MINT> <DELEGATE> <AMOUNT>",
+    );
+    process.exit(1);
+  }
+
+  approveDelegate(mintAddress, delegateAddress, Number(amount))
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("错误:", err);
+      process.exit(1);
+    });
+} else if (action === "revoke") {
+  if (!mintAddress) {
+    console.error("用法: npx ts-node approve-delegate.ts revoke <MINT>");
+    process.exit(1);
+  }
+
+  revokeDelegate(mintAddress)
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("错误:", err);
+      process.exit(1);
+    });
+} else if (action === "status") {
+  if (!mintAddress) {
+    console.error("用法: npx ts-node approve-delegate.ts status <MINT>");
+    process.exit(1);
+  }
+
+  showDelegateStatus(mintAddress)
+    .then(() => process.exit(0))
+    .catch((err) => {
+      console.error("错误:", err);
+      process.exit(1);
+    });
+} else {
+  console.error("用法:");
+  console.error(
+    "  npx ts-node approve-delegate.ts approve <MINT> <DELEGATE> <AMOUNT>",
+  );
+  console.error("  npx ts-node approve-delegate.ts revoke <MINT>");
+  console.error("  npx ts-node approve-delegate.ts status <MINT>");
+  process.exit(1);
 }

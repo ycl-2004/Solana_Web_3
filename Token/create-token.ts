@@ -1,3 +1,4 @@
+console.log("create-token.ts started");
 // create-token.ts
 import { createMint } from "@solana/spl-token";
 import { connection, loadWallet } from "./config";

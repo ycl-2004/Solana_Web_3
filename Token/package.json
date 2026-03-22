@@ -4,17 +4,23 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "create-token": "npx ts-node create-token.ts",
     "create-ata": "npx ts-node create-ata.ts",
     "mint": "npx ts-node mint-tokens.ts",
-    "transfer": "npx ts-node transfer-token.ts"
+    "transfer": "npx ts-node transfer.ts",
+    "approve-delegate": "npx ts-node approve-delegate.ts",
+    "delegate-transfer": "npx ts-node delegate-transfer.ts",
+    "delegate-negative": "npx ts-node delegate-negative-tests.ts",
+    "batch": "npx ts-node batch-operations.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@metaplex-foundation/mpl-token-metadata": "^3.4.0",
+    "@metaplex-foundation/umi": "^1.5.1",
+    "@metaplex-foundation/umi-bundle-defaults": "^1.5.1",
     "@solana/spl-token": "^0.4.14",
     "@solana/web3.js": "^1.98.4"
   },

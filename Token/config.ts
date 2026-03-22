@@ -1,21 +1,21 @@
-// config.ts
 import { Connection, Keypair, clusterApiUrl } from "@solana/web3.js";
 import fs from "fs";
 
-// 连接到 Devnet
 export const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
 
-// 从文件加载钱包（与 CLI 使用相同的密钥）
 export function loadWallet(): Keypair {
-  const secretKey = JSON.parse(
-    fs.readFileSync(`${process.env.HOME}/.config/solana/id.json`, "utf-8"),
-  );
+  const path = `${process.env.HOME}/.config/solana/id.json`;
+
+  if (!fs.existsSync(path)) {
+    throw new Error(`找不到钱包文件: ${path}`);
+  }
+
+  const secretKey = JSON.parse(fs.readFileSync(path, "utf-8"));
   return Keypair.fromSecretKey(new Uint8Array(secretKey));
 }
 
-// 辅助函数：格式化代币数量
 export function formatTokenAmount(amount: bigint, decimals: number): string {
-  const divisor = BigInt(10 ** decimals);
+  const divisor = 10n ** BigInt(decimals);
   const integerPart = amount / divisor;
   const fractionalPart = amount % divisor;
 
