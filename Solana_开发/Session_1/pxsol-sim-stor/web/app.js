@@ -11,6 +11,9 @@ const messages = {
     eyebrow: "Phantom + Devnet",
     hero_title: "Solana P1 _ 留言板",
     hero_intro: "这个版本不再读取本地私钥文件，也不需要 Python server。网页会直接连接 Phantom，由用户自己签名交易并写入你现有的 Solana 程序。",
+    hero_pill_browser: "浏览器直接签名",
+    hero_pill_devnet: "Solana Devnet",
+    hero_pill_storage: "每钱包一条最新留言",
     side_label: "当前设置",
     side_network: "网络",
     side_wallet_mode: "钱包模式",
@@ -38,6 +41,8 @@ const messages = {
     status_label: "状态",
     board_title: "链上留言板",
     board_note: "留言板直接读取当前 program 下面的所有链上账户。因为合约没有存作者昵称或时间戳，所以这里只能稳定显示 PDA 和消息内容。",
+    your_message_kicker: "你当前连接的钱包，对应的最新链上内容。",
+    board_message_kicker: "Program 账户中的一条可见链上留言。",
     board_meta: "RPC: {rpc} | Program: {program} | Accounts: {count}",
     empty_board: "链上还没有可见留言。连上 Phantom 之后来发布第一条吧。",
     your_message: "你的留言",
@@ -71,6 +76,9 @@ const messages = {
     eyebrow: "Phantom + Devnet",
     hero_title: "Solana P1 _ Message Board",
     hero_intro: "This version no longer reads local keypair files and does not need a Python server. The page connects directly to Phantom, and each user signs their own transaction into your existing Solana program.",
+    hero_pill_browser: "Browser-Signed",
+    hero_pill_devnet: "Solana Devnet",
+    hero_pill_storage: "One Latest Message",
     side_label: "Current Setup",
     side_network: "Network",
     side_wallet_mode: "Wallet Mode",
@@ -98,6 +106,8 @@ const messages = {
     status_label: "Status",
     board_title: "On-Chain Board",
     board_note: "The board reads every account owned by the current program. Because the contract does not store author names or timestamps, the UI can only reliably show the PDA and message content.",
+    your_message_kicker: "The latest on-chain content for your connected wallet.",
+    board_message_kicker: "One visible on-chain message stored in a program account.",
     board_meta: "RPC: {rpc} | Program: {program} | Accounts: {count}",
     empty_board: "No visible on-chain messages yet. Connect Phantom and publish the first one.",
     your_message: "Your Message",
@@ -196,6 +206,10 @@ function shorten(value) {
   return `${value.slice(0, 8)}...${value.slice(-8)}`;
 }
 
+function escapeAttribute(value) {
+  return escapeHtml(value).replaceAll('"', "&quot;");
+}
+
 function escapeHtml(value) {
   return value
     .replaceAll("&", "&amp;")
@@ -278,15 +292,23 @@ function renderBoard(entries) {
         <article class="entry ${entry.isCurrentUser ? "entry-current" : ""}">
           <div class="entry-top">
             <div class="entry-heading">
-              <h3>${entry.isCurrentUser ? t("your_message") : t("board_message")}</h3>
+              <div class="entry-heading-copy">
+                <h3>${entry.isCurrentUser ? t("your_message") : t("board_message")}</h3>
+                <p class="entry-kicker">${entry.isCurrentUser ? t("your_message_kicker") : t("board_message_kicker")}</p>
+              </div>
               <span class="entry-tag">${entry.isCurrentUser ? t("current_wallet_tag") : t("account_tag")}</span>
             </div>
           </div>
           <div class="entry-grid">
-            <p class="meta"><span class="meta-label">${t("pda_label")}:</span> ${escapeHtml(entry.pda)}</p>
-            <p class="meta"><span class="meta-label">${t("wallet_label")}:</span> ${entry.wallet ? escapeHtml(entry.wallet) : escapeHtml(t("wallet_unknown").replace(/^Wallet:\s*/, ""))}</p>
+            <div class="meta-card">
+              <span class="meta-chip-label">${t("pda_label")}</span>
+              <p class="meta">${escapeHtml(entry.pda)}</p>
+            </div>
           </div>
-          <p class="message">${escapeHtml(entry.message || "")}</p>
+          <div class="entry-message-block">
+            <span class="surface-label">${entry.isCurrentUser ? t("surface_label") : t("board_message")}</span>
+            <p class="message">${escapeHtml(entry.message || "")}</p>
+          </div>
         </article>
       `;
     })
@@ -331,7 +353,13 @@ function updateConnectButton() {
     connectButton.textContent = t("connect_button");
     return;
   }
-  connectButton.textContent = `${t("connect_button")} ${shorten(currentPublicKey.toBase58())}`;
+  const wallet = currentPublicKey.toBase58();
+  connectButton.innerHTML = `
+    <span class="connect-button-text">
+      <span class="connect-button-label">${escapeHtml(t("connect_button"))}</span>
+      <span class="connect-button-address" title="${escapeAttribute(wallet)}">${escapeHtml(shorten(wallet))}</span>
+    </span>
+  `;
 }
 
 async function connectWallet() {
