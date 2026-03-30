@@ -1,0 +1,30 @@
+{
+  "name": "future",
+  "symbol": "FTR",
+  "description": "I gonna see her in the future",
+  "image": "REPLACE_WITH_IMAGE_URI",
+  "external_url": "https://example.com",
+  "attributes": [
+    {
+      "trait_type": "Theme",
+      "value": "Future"
+    },
+    {
+      "trait_type": "Network",
+      "value": "Solana Devnet"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Collection"
+    }
+  ],
+  "properties": {
+    "category": "image",
+    "files": [
+      {
+        "uri": "REPLACE_WITH_IMAGE_URI",
+        "type": "image/png"
+      }
+    ]
+  }
+}

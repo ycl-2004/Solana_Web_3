@@ -1,0 +1,310 @@
+NFT 学习笔记
+============
+
+Workflow
+--------
+
+完整顺序：
+1. `npx ts-node src/index.ts`
+   检查 RPC、钱包、余额
+
+2. `npx ts-node src/uploadCollectionMetadata.ts`
+   上传 collection 的图片和 metadata
+
+3. `npx ts-node src/createLegacyCollection.ts`
+   创建 Collection NFT
+
+4. `npx ts-node src/uploadLegacyNftMetadata.ts`
+   上传普通 NFT 的图片和 metadata
+
+5. `npx ts-node src/mintLegacyNft.ts`
+   铸造普通 NFT，并 verify 到 collection
+
+一句话理解：
+- 前 3 步是在创建“系列”
+- 后 2 步是在创建“系列里的成员 NFT”
+
+1. 环境检查
+-----------
+
+命令：
+`npx ts-node src/index.ts`
+
+结果：
+- RPC：`https://api.devnet.solana.com`
+- 钱包：`StXNKBqQhthowMFPPwUs2jjvbFoEujB8T5ZC6r2v5uH`
+- 余额：`3.95300516 SOL`
+
+
+2. 上传 Collection 资源
+----------------------
+
+命令：
+`npx ts-node src/uploadCollectionMetadata.ts`
+
+结果：
+- Collection Image URI：
+  `https://gateway.irys.xyz/2gbWRA7uFYdryY5YkcVXdzyKBAbRHfwmNPopPqXH6tGP`
+- Collection Metadata URI：
+  `https://gateway.irys.xyz/4YxGk4wh8xDczuFyZcLnYeuNajbZdNnBUw61ZLKwvL8R`
+
+说明：
+- 这一步只是上传 collection 的图片和 metadata
+- 还不是链上的 NFT
+- 目的是拿到 `metadataUri`
+
+
+3. 创建 Legacy Collection NFT
+-----------------------------
+
+命令：
+`npx ts-node src/createLegacyCollection.ts`
+
+结果：
+- Collection 地址：
+  `9KuHMCwUmWKsSFiwH3h6TLWKoMSBQe3EtChcjJGCfmAi`
+
+说明：
+- Collection 本质上也是 NFT
+- 只是创建时加了 `isCollection: true`
+- 它是整个系列的根
+
+
+4. Collection 和 Verify
+-----------------------
+
+关键理解：
+- Collection = 系列的官方主 NFT
+- Verify = 官方确认某张普通 NFT 真的属于这个系列
+
+注意：
+- 创建 Collection 不等于已经 verify
+- Collection 本身不需要再 verify 一次
+- 以后是普通 NFT 先挂上 collection，再由 authority 去 verify
+
+
+5. 上传普通 NFT 资源
+-------------------
+
+命令：
+`npx ts-node src/uploadLegacyNftMetadata.ts`
+
+结果：
+- 普通 NFT Image URI：
+  `https://gateway.irys.xyz/2MkW6NNb2WZPjLkrwQtzE3Qu1M9Tc2hQApmS7GTD9Lcb`
+- 普通 NFT Metadata URI：
+  `https://gateway.irys.xyz/7d6ohCezCJamkiHKNVTb56HWpfvHU3d4yqbxwBcvVJ8B`
+
+说明：
+- 这一步是为“某一张普通 NFT”准备自己的 metadata
+- 和 collection metadata 是不同对象
+
+
+6. 铸造并验证普通 NFT
+---------------------
+
+命令：
+`npx ts-node src/mintLegacyNft.ts`
+
+结果：
+- 普通 NFT 地址：
+  `Cx8dx8LYmnkn2VNwpLog8FvDgfTXpePVWLuCFL4ZqrJ`
+- Collection 地址：
+  `9KuHMCwUmWKsSFiwH3h6TLWKoMSBQe3EtChcjJGCfmAi`
+
+说明：
+- 先创建一张普通 NFT
+- 再把它正式加入 `future` collection
+- 最后完成 verify
+
+
+7. 这一步和上一步的区别
+-----------------------
+
+上一步：
+- 创建的是 Collection NFT
+- 它是整个系列的根
+- 它代表“future 这个系列本身”
+
+这一步：
+- 创建的是普通 NFT
+- 它是系列里的某一个成员
+- 它需要被挂到 collection 上，并经过 verify
+
+一句话理解：
+- 上一步是在创建“系列”
+- 这一步是在创建“系列里的作品”
+
+
+8. 当前完成进度
+---------------
+
+已经完成：
+- 环境初始化
+- 上传 Collection 资源
+- 创建 Legacy Collection NFT
+- 上传普通 NFT 资源
+- 铸造普通 NFT
+- verify 进 collection
+
+现在你已经完整跑通了 Legacy NFT 流程。
+
+
+9. Anchor Custom Minter 总结
+----------------------------
+
+目标：
+- 不再用本地脚本手动一步一步 mint
+- 改成写一个自己的 Anchor 程序
+- 让用户调用程序后，程序自动执行 mint 规则
+
+这条线现在完成了什么：
+- 建立独立 Anchor 项目：`NFT/anchor-minter`
+- 初始化链上总配置 `MintConfig`
+- 实现免费 mint
+- 实现每钱包最多 mint 1 张
+- 实现销毁后可再 mint
+- 接上 Metaplex metadata
+- 接上 master edition
+- 接上 collection authority delegate
+- 接上自动 verify 进现有 collection
+
+一句话理解：
+- Legacy 那一段是“你手动操作”
+- Anchor 这一段是“把规则写进链上程序，让程序自动操作”
+
+
+10. Anchor Workflow
+-------------------
+
+本地开发顺序：
+1. `cd NFT/anchor-minter`
+2. `anchor build`
+3. 启动本地 validator
+4. `solana program deploy target/deploy/anchor_minter.so --program-id target/deploy/anchor_minter-keypair.json --url http://127.0.0.1:<PORT>`
+5. `ANCHOR_PROVIDER_URL=http://127.0.0.1:<PORT> ANCHOR_WALLET=~/.config/solana/id.json npx ts-mocha -p ./tsconfig.json -t 1000000 "tests/**/*.ts"`
+
+devnet 实际使用顺序：
+1. `cd NFT/anchor-minter`
+2. `anchor build`
+3. `npx ts-node scripts/approveCollectionAuthority.ts`
+4. `solana program deploy target/deploy/anchor_minter.so --program-id target/deploy/anchor_minter-keypair.json --url devnet`
+5. `ANCHOR_PROVIDER_URL=https://api.devnet.solana.com ANCHOR_WALLET=~/.config/solana/id.json npx ts-node scripts/initializeConfig.ts`
+6. `ANCHOR_PROVIDER_URL=https://api.devnet.solana.com ANCHOR_WALLET=~/.config/solana/id.json npx ts-node scripts/mintNftWithMetadata.ts`
+
+说明：
+- 第 3 步 delegate 只需要做一次
+- 第 5 步 initialize config 只需要做一次
+- 第 6 步是以后真正给用户 mint 的逻辑入口
+
+
+11. Anchor 测试链条与结果
+-------------------------
+
+本地测试覆盖：
+1. 初始化 `MintConfig`
+2. 同一个 config PDA 不能重复初始化
+3. 同一个钱包只能 mint 一次
+4. 不同钱包可以各 mint 一次
+5. 销毁后可以再次 mint
+
+本地测试结果：
+- 在全新 local validator 上通过
+- 结果：`5 passing`
+
+本地测试重点验证：
+- `current_supply` 会正确增加
+- `user_record.mint_count` 会正确记录
+- 第二次 mint 会被拒绝
+- burn 后 `mint_count` 会回到 `0`
+- burn 后可以再次 mint
+- burn 后原 ATA 会被关闭
+
+你已经实际打通的 devnet 动作：
+- 已把当前 collection delegate 给程序 PDA
+- 已在 devnet 部署 `anchor-minter`
+- 已初始化 devnet `MintConfig`
+- 已成功跑通一笔完整的 metadata + master edition + collection verify mint
+
+成功结果：
+- Program ID：
+  `4ZGqxpGWvEC71CDC1tghV7meg6fQ1hnKVgn2iUTYzb56`
+- Config PDA：
+  `7cnnoCwMWjpFNdyDenXAn4pevGircPq4AssyUKs3ygas`
+- 成功 mint 的完整 NFT：
+  `ES78dhC7YdHPRhBSGRLsFFCwqQniRzXMWGfuGU9YF1ZC`
+- 成功交易：
+  `5WJMgjZ5XNxDPWxSes4sBRHq6iKyHR26PwhayDSyjre8N2tBf5aEGGhDpHyynis6bgFKzjX84s62tyPWVv9KaFaD`
+
+
+12. Anchor 权限结构
+-------------------
+
+现在的权限关系：
+- 主钱包仍然是 collection 真正的 owner / update authority
+- 程序的 `config PDA` 是 collection delegate
+- 程序可以自动替你 verify 新 NFT
+- 用户不需要每次来找你手动盖章
+
+一句话理解：
+- 钱包还是老板
+- 程序是你授权出去的管理员
+
+
+13. 其他人 mint 时需要上传什么
+------------------------------
+
+如果用你现在这套 `mintNftWithMetadata`：
+- 他们不需要自己上传图片
+- 他们也不需要自己上传 JSON
+- 现在脚本里已经写死了一份 metadata URI，所以 mint 出来的内容会是同一套模板
+
+如果你以后想让“每个人 mint 出不同内容”，才需要额外设计：
+- 用户自己先上传图片和 metadata
+或
+- 由你的后端 / 前端 帮他们上传，再把 `uri` 传给程序
+
+你当前这版更像：
+- 免费领取同一个系列模板下的一张 NFT
+
+不是：
+- 用户自己上传素材，生成完全自定义 NFT
+
+
+14. 前端 Mint 页面
+------------------
+
+新增目录：
+- `NFT/anchor-minter/app`
+
+这个前端页面现在已经能做：
+1. 连接 Phantom
+2. 浏览器里选择图片
+3. 填写 `name / symbol / description`
+4. 前端自动上传图片到 Irys
+5. 前端自动生成并上传 metadata JSON
+6. 调用 `mint_nft_with_metadata`
+7. 自动 mint 到 `Future collection`
+
+前端页面风格：
+- 参考你原本 `pxsol-sim-stor` 的 GitHub Pages 页面
+- 走同样的米白底、暖棕强调、分区式 layout
+- 作为 Solana Web 3 网站里的第二个 project section 很合适
+
+前端关键文件：
+- `NFT/anchor-minter/app/src/App.tsx`
+- `NFT/anchor-minter/app/src/styles.css`
+- `NFT/anchor-minter/app/src/main.tsx`
+
+前端打包验证：
+- `cd NFT/anchor-minter/app`
+- `npm run build`
+- 已成功通过
+
+注意：
+- 现在浏览器端 mint 的内容不再是写死模板
+- 用户可以自己上传图片并自定义 metadata 内容
+- 程序仍然会保持：
+  - 免费 mint
+  - 每钱包一张
+  - 自动 verify 到你的 collection

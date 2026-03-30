@@ -25,10 +25,27 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: NFT/anchor-minter/app/package-lock.json
+
+      - name: Install Future Collection app dependencies
+        run: npm ci --prefix NFT/anchor-minter/app
+
+      - name: Build Future Collection app
+        env:
+          VITE_BASE_PATH: /${{ github.event.repository.name }}/future-collection/
+        run: npm run build --prefix NFT/anchor-minter/app
+
       - name: Build static Pages artifact
         run: |
           mkdir -p dist/pxsol-sim-stor
+          mkdir -p dist/future-collection
           cp -R "Solana_开发/Session_1/pxsol-sim-stor/web/." dist/pxsol-sim-stor/
+          cp -R "NFT/anchor-minter/app/dist/." dist/future-collection/
           cat <<'EOF' > dist/index.html
           <!DOCTYPE html>
           <html lang="zh-CN">
@@ -69,6 +86,11 @@ jobs:
                   <h2>pxsol-sim-stor</h2>
                   <p>最小链上存储实验，现已提供 Phantom + devnet 前端留言板版本。</p>
                   <p><a href="./pxsol-sim-stor/">打开项目页面</a></p>
+                </div>
+                <div class="card">
+                  <h2>Future Collection Minter</h2>
+                  <p>自定义上传图片、自动生成 metadata，并将 NFT mint 进 Future collection。</p>
+                  <p><a href="./future-collection/">打开 Project 02 页面</a></p>
                 </div>
               </main>
             </body>

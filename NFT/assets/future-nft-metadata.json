@@ -1,0 +1,30 @@
+{
+  "name": "future #1",
+  "symbol": "FTR",
+  "description": "The first NFT inside the future collection",
+  "image": "REPLACE_WITH_IMAGE_URI",
+  "external_url": "https://example.com",
+  "attributes": [
+    {
+      "trait_type": "Collection",
+      "value": "future"
+    },
+    {
+      "trait_type": "Edition",
+      "value": "1"
+    },
+    {
+      "trait_type": "Network",
+      "value": "Solana Devnet"
+    }
+  ],
+  "properties": {
+    "category": "image",
+    "files": [
+      {
+        "uri": "REPLACE_WITH_IMAGE_URI",
+        "type": "image/png"
+      }
+    ]
+  }
+}

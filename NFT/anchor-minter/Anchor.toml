@@ -1,0 +1,22 @@
+[toolchain]
+package_manager = "npm"
+
+[features]
+resolution = true
+skip-lint = false
+
+[programs.localnet]
+anchor_minter = "4ZGqxpGWvEC71CDC1tghV7meg6fQ1hnKVgn2iUTYzb56"
+
+[registry]
+url = "https://api.apr.dev"
+
+[provider]
+cluster = "http://127.0.0.1:8898"
+wallet = "~/.config/solana/id.json"
+
+[test.validator]
+rpc_port = 8898
+
+[scripts]
+test = "npx ts-mocha -p ./tsconfig.json -t 1000000 \"tests/**/*.ts\""
