@@ -27,7 +27,7 @@ import {
 import { irysUploader } from "@metaplex-foundation/umi-uploader-irys/web";
 import { walletAdapterIdentity } from "@metaplex-foundation/umi-signer-wallet-adapters";
 
-import idl from "../../target/idl/anchor_minter.json";
+import idl from "./anchor_minter.json";
 
 const DEVNET_ENDPOINT = "https://api.devnet.solana.com";
 const PROGRAM_ID = new PublicKey("4ZGqxpGWvEC71CDC1tghV7meg6fQ1hnKVgn2iUTYzb56");

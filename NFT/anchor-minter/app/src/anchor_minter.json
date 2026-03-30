@@ -1,0 +1,692 @@
+{
+  "address": "4ZGqxpGWvEC71CDC1tghV7meg6fQ1hnKVgn2iUTYzb56",
+  "metadata": {
+    "name": "anchor_minter",
+    "version": "0.1.0",
+    "spec": "0.1.0",
+    "description": "Created with Anchor"
+  },
+  "instructions": [
+    {
+      "name": "burn_nft",
+      "discriminator": [
+        119,
+        13,
+        183,
+        17,
+        194,
+        243,
+        38,
+        31
+      ],
+      "accounts": [
+        {
+          "name": "owner",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "owner"
+              }
+            ]
+          }
+        },
+        {
+          "name": "nft_mint",
+          "writable": true
+        },
+        {
+          "name": "nft_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "owner"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "initialize",
+      "discriminator": [
+        175,
+        175,
+        109,
+        31,
+        13,
+        152,
+        155,
+        237
+      ],
+      "accounts": [
+        {
+          "name": "authority",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "treasury",
+          "docs": [
+            "第一版先只保存金库地址。",
+            "后续 mint 时会把用户支付转到这个地址。"
+          ]
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "collection_mint",
+          "type": "pubkey"
+        },
+        {
+          "name": "mint_price",
+          "type": "u64"
+        },
+        {
+          "name": "max_supply",
+          "type": "u32"
+        }
+      ]
+    },
+    {
+      "name": "mint_nft",
+      "discriminator": [
+        211,
+        57,
+        6,
+        167,
+        15,
+        219,
+        35,
+        251
+      ],
+      "accounts": [
+        {
+          "name": "minter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "minter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "nft_mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "nft_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "minter"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": []
+    },
+    {
+      "name": "mint_nft_with_metadata",
+      "discriminator": [
+        46,
+        53,
+        21,
+        27,
+        80,
+        240,
+        94,
+        36
+      ],
+      "accounts": [
+        {
+          "name": "minter",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "config",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  99,
+                  111,
+                  110,
+                  102,
+                  105,
+                  103
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name": "user_record",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "const",
+                "value": [
+                  117,
+                  115,
+                  101,
+                  114
+                ]
+              },
+              {
+                "kind": "account",
+                "path": "minter"
+              }
+            ]
+          }
+        },
+        {
+          "name": "nft_mint",
+          "writable": true,
+          "signer": true
+        },
+        {
+          "name": "nft_token_account",
+          "writable": true,
+          "pda": {
+            "seeds": [
+              {
+                "kind": "account",
+                "path": "minter"
+              },
+              {
+                "kind": "account",
+                "path": "token_program"
+              },
+              {
+                "kind": "account",
+                "path": "nft_mint"
+              }
+            ],
+            "program": {
+              "kind": "const",
+              "value": [
+                140,
+                151,
+                37,
+                143,
+                78,
+                36,
+                137,
+                241,
+                187,
+                61,
+                16,
+                41,
+                20,
+                142,
+                13,
+                131,
+                11,
+                90,
+                19,
+                153,
+                218,
+                255,
+                16,
+                132,
+                4,
+                142,
+                123,
+                216,
+                219,
+                233,
+                248,
+                89
+              ]
+            }
+          }
+        },
+        {
+          "name": "nft_metadata",
+          "docs": [
+            "这是新 NFT 的 metadata PDA。",
+            "程序里会再次验证它是否真的是正确的 PDA。"
+          ],
+          "writable": true
+        },
+        {
+          "name": "nft_master_edition",
+          "docs": [
+            "这是新 NFT 的 master edition PDA。",
+            "程序里会再次验证它是否真的是正确的 PDA。"
+          ],
+          "writable": true
+        },
+        {
+          "name": "collection_mint",
+          "docs": [
+            "这里引用你已经存在的 collection mint。",
+            "因为这不是本程序创建出来的账户，所以先作为 unchecked 传入，再在程序里验证地址。"
+          ]
+        },
+        {
+          "name": "collection_metadata",
+          "docs": [
+            "现有 collection 的 metadata PDA。"
+          ],
+          "writable": true
+        },
+        {
+          "name": "collection_master_edition",
+          "docs": [
+            "现有 collection 的 master edition PDA。"
+          ]
+        },
+        {
+          "name": "collection_authority_record",
+          "docs": [
+            "这是“collection authority delegate record”账户。",
+            "只有当你的主钱包先把 config PDA delegate 成 collection authority 后，这个 PDA 才会存在。"
+          ]
+        },
+        {
+          "name": "collection_update_authority",
+          "docs": [
+            "这里传入 collection 当前真正的 update authority。",
+            "你现在的设计里，这个地址仍然应该是你的主钱包。"
+          ]
+        },
+        {
+          "name": "token_program"
+        },
+        {
+          "name": "associated_token_program",
+          "address": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+        },
+        {
+          "name": "metadata_program",
+          "address": "metaqbxxUerdq28cj1RbAWkYQm3ybzjb6a8bt518x1s"
+        },
+        {
+          "name": "rent",
+          "address": "SysvarRent111111111111111111111111111111111"
+        },
+        {
+          "name": "system_program",
+          "address": "11111111111111111111111111111111"
+        }
+      ],
+      "args": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "symbol",
+          "type": "string"
+        },
+        {
+          "name": "uri",
+          "type": "string"
+        }
+      ]
+    }
+  ],
+  "accounts": [
+    {
+      "name": "MintConfig",
+      "discriminator": [
+        168,
+        252,
+        88,
+        182,
+        219,
+        205,
+        39,
+        53
+      ]
+    },
+    {
+      "name": "UserRecord",
+      "discriminator": [
+        210,
+        252,
+        132,
+        218,
+        191,
+        85,
+        173,
+        167
+      ]
+    }
+  ],
+  "errors": [
+    {
+      "code": 6000,
+      "name": "SoldOut",
+      "msg": "这个 collection 已经 mint 完了"
+    },
+    {
+      "code": 6001,
+      "name": "MintLimitReached",
+      "msg": "这个钱包已经 mint 过一张 NFT 了"
+    },
+    {
+      "code": 6002,
+      "name": "InvalidUserRecord",
+      "msg": "UserRecord 和当前钱包不匹配"
+    },
+    {
+      "code": 6003,
+      "name": "MathOverflow",
+      "msg": "数学溢出"
+    },
+    {
+      "code": 6004,
+      "name": "InvalidMetadataPda",
+      "msg": "传入的 NFT metadata PDA 不正确"
+    },
+    {
+      "code": 6005,
+      "name": "InvalidMasterEditionPda",
+      "msg": "传入的 NFT master edition PDA 不正确"
+    },
+    {
+      "code": 6006,
+      "name": "InvalidCollectionMint",
+      "msg": "传入的 collection mint 和配置不一致"
+    },
+    {
+      "code": 6007,
+      "name": "InvalidCollectionMetadataPda",
+      "msg": "传入的 collection metadata PDA 不正确"
+    },
+    {
+      "code": 6008,
+      "name": "InvalidCollectionMasterEditionPda",
+      "msg": "传入的 collection master edition PDA 不正确"
+    },
+    {
+      "code": 6009,
+      "name": "InvalidCollectionAuthorityRecordPda",
+      "msg": "传入的 collection authority record PDA 不正确"
+    },
+    {
+      "code": 6010,
+      "name": "InvalidCollectionUpdateAuthority",
+      "msg": "传入的 collection update authority 不正确"
+    },
+    {
+      "code": 6011,
+      "name": "NothingToBurn",
+      "msg": "这个钱包当前没有可销毁的 NFT"
+    },
+    {
+      "code": 6012,
+      "name": "MathUnderflow",
+      "msg": "数学下溢"
+    }
+  ],
+  "types": [
+    {
+      "name": "MintConfig",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "authority",
+            "type": "pubkey"
+          },
+          {
+            "name": "collection_mint",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint_price",
+            "type": "u64"
+          },
+          {
+            "name": "current_supply",
+            "type": "u32"
+          },
+          {
+            "name": "max_supply",
+            "type": "u32"
+          },
+          {
+            "name": "treasury",
+            "type": "pubkey"
+          },
+          {
+            "name": "bump",
+            "type": "u8"
+          }
+        ]
+      }
+    },
+    {
+      "name": "UserRecord",
+      "type": {
+        "kind": "struct",
+        "fields": [
+          {
+            "name": "owner",
+            "type": "pubkey"
+          },
+          {
+            "name": "mint_count",
+            "type": "u32"
+          }
+        ]
+      }
+    }
+  ]
+}
